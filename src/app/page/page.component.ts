@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/fromPromise';
 
-import PrismicDOM from 'prismic-dom';
+import * as PrismicDOM from 'prismic-dom';
 import { debugOutputAstAsTypeScript, DEFAULT_INTERPOLATION_CONFIG } from '@angular/compiler';
 
 @Component({
@@ -26,14 +26,12 @@ export class PageComponent implements OnInit, OnDestroy, AfterViewChecked {
   toolbar = false;
 
   constructor(private prismic: PrismicService, private route: ActivatedRoute) {
-    this.route.params.map(p => console.log(p['uid']));
   }
 
   ngOnInit() {
     this.routeStream = this.route.params
       .map(params => params['uid'])
       .mergeMap(uid => Observable.fromPromise(this.prismic.buildContext()).map(ctx => [uid, ctx]))
-
       .subscribe(([uid, ctx]) => {
         this.ctx = ctx;
         this.fetchPage(uid);
@@ -52,11 +50,12 @@ export class PageComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   fetchPage(pageUID) {
-   
+
     this.ctx.api.getByUID('page', pageUID, {})
     .then(data => {
       this.toolbar = false;
       this.pageContent = data;
+      console.log(this.pageContent)
     })
     .catch(e => console.log('error in e', e));
   }

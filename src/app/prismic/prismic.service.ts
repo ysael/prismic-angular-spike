@@ -40,7 +40,7 @@ export class PrismicService {
   getRepositoryInfos() {
     const repoRegexp = /^(https?:\/\/([-\w]+)\.[a-z]+\.(io|dev))\/api(\/v2)?$/;
     const [_, url, name] = CONFIG.apiEndpoint.match(repoRegexp);
-    const isConfigured = name !== 'your-repo-name';
+    const isConfigured = name !== 'angular-prismic-spike';
     return { url, name, isConfigured };
   }
 
