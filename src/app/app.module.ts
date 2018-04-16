@@ -14,12 +14,15 @@ import {TransferHttpCacheModule} from '@nguniversal/common';
 import { HttpModule } from '@angular/http';
 import { CookieModule } from 'ngx-cookie';
 import { FormStyle } from '@angular/common';
+import { PageModule } from './page/page.module';
+import { PageComponent } from './page/page.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full'},
   { path: '', pathMatch: 'full', redirectTo: '/help' },
   { path: 'help', component: HelpComponent},
   { path: 'preview', component: PreviewComponent },
+  { path: 'page/:uid', component: PageComponent },
   { path: 'lazy', loadChildren: './lazy/lazy.module#LazyModule'},
   { path: 'lazy/nested', loadChildren: './lazy/lazy.module#LazyModule'},
 ];
@@ -35,6 +38,7 @@ export const routes: Routes = [
     CookieModule.forRoot(),
     HelpModule,
     PreviewModule,
+    PageModule,
     FormsModule,
     HttpModule,
     TransferHttpCacheModule,

@@ -8,8 +8,11 @@ export interface PrismicConfiguration {
 
 export const CONFIG: PrismicConfiguration = {
   apiEndpoint: 'https://landr-demo.prismic.io/api/v2',
-  accessToken: 'MC5XdEVCQXlvQUFDb0F0VEpH.77-9Re-_ve-_vQrvv71m77-977-977-977-9HDrvv73vv73vv73vv73vv73vv73vv71p77-9Le-_ve-_vQYrZ--_vRIP77-9',
   linkResolver(doc) {
+    if (doc.type === 'landing_page') {
+      console.log('landing paaaaa')
+      return `${doc.lang.substring(0, 2)}/${doc.uid}`;
+    }
     return '/';
   }
 };
