@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, SimpleChanges, AfterViewChecked } from '@angular/core';
 import { Context } from '../prismic/context';
 import { PrismicService } from '../prismic/prismic.service';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription, Observable } from 'rxjs/Rx';
+import { ActivatedRoute, Params } from '@angular/router';
+import { Observable } from 'rxjs/Rx';
+import { Subscription } from 'rxjs/Rx';
 import PrismicDOM from 'prismic-dom';
 import { debugOutputAstAsTypeScript, DEFAULT_INTERPOLATION_CONFIG } from '@angular/compiler';
 
@@ -11,27 +12,28 @@ import { debugOutputAstAsTypeScript, DEFAULT_INTERPOLATION_CONFIG } from '@angul
   templateUrl: './page.component.html',
   styleUrls: ['./page.component.css']
 })
-export class PageComponent implements OnInit, OnDestroy {
+export class PageComponent implements OnInit, OnDestroy, AfterViewChecked {
   private routeStream: Subscription;
   PrismicDOM: Object = PrismicDOM;
 
   ctx ?: Context;
   pageContent ?: any;
-  toolbar ?: boolean = false;
+  toolbar = false;
 
   constructor(private prismic: PrismicService, private route: ActivatedRoute) {
-    console.log(this.prismic.buildContext())
+    this.route.params.map(p => console.log(p['uid']));
   }
 
   ngOnInit() {
-    this.routeStream = this.route.params
+    this.routeStream = this.route.paramMap
       .map(params => params['uid'])
       .flatMap(uid => Observable.fromPromise(this.prismic.buildContext()).map(ctx => [uid, ctx]))
+
       .subscribe(([uid, ctx]) => {
-        console.log('ctx',ctx)
         this.ctx = ctx;
+        console.log('ctx', this.ctx.api);
         this.fetchPage(uid);
-      }); 
+      });
   }
 
   ngOnDestroy() {
@@ -39,17 +41,16 @@ export class PageComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewChecked() {
-    if(this.ctx && !this.toolbar) {
+    if (this.ctx && !this.toolbar) {
       this.prismic.toolbar(this.ctx.api);
       this.toolbar = true;
     }
   }
 
   fetchPage(pageUID) {
-    this.ctx.api.getByUID('landing_page', 'pageUID', {})
+    this.ctx.api.getByUID('landing_page', pageUID, {})
     .then(data => {
-      console.log('tyaaaa', data);
-      this.toolbar = true;
+      this.toolbar = false;
       this.pageContent = data;
     })
     .catch(e => console.log('error in e', e));

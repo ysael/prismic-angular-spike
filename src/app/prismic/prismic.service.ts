@@ -1,7 +1,7 @@
 import PrismicToolbar from 'prismic-toolbar';
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import * as Prismic from 'prismic-javascript'
+import * as Prismic from 'prismic-javascript';
 
 import { Context } from './context';
 import { Preview } from './preview';
@@ -16,7 +16,6 @@ export class PrismicService {
     const options = {};
     return Prismic.api(CONFIG.apiEndpoint)
       .then((api) => {
-        debugger;
         return {
           api,
           endpoint: CONFIG.apiEndpoint,
