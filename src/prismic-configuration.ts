@@ -7,9 +7,9 @@ export interface PrismicConfiguration {
 }
 
 export const CONFIG: PrismicConfiguration = {
-  apiEndpoint: 'https://landr-demo.prismic.io/api/v2',
+  apiEndpoint: 'https://angular-prismic-spike.prismic.io/api/v2',
   linkResolver(doc) {
-    if (doc.type === 'landing_page') {
+    if (doc.type === 'page') {
       return `page/${doc.uid}`;
     }
     return '/';

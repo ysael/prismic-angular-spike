@@ -2,8 +2,13 @@ import { Component, OnInit, OnDestroy, SimpleChanges, AfterViewChecked } from '@
 import { Context } from '../prismic/context';
 import { PrismicService } from '../prismic/prismic.service';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Observable } from 'rxjs/Rx';
-import { Subscription } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/observable/fromPromise';
+
 import PrismicDOM from 'prismic-dom';
 import { debugOutputAstAsTypeScript, DEFAULT_INTERPOLATION_CONFIG } from '@angular/compiler';
 
@@ -25,13 +30,12 @@ export class PageComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngOnInit() {
-    this.routeStream = this.route.paramMap
+    this.routeStream = this.route.params
       .map(params => params['uid'])
-      .flatMap(uid => Observable.fromPromise(this.prismic.buildContext()).map(ctx => [uid, ctx]))
+      .mergeMap(uid => Observable.fromPromise(this.prismic.buildContext()).map(ctx => [uid, ctx]))
 
       .subscribe(([uid, ctx]) => {
         this.ctx = ctx;
-        console.log('ctx', this.ctx.api);
         this.fetchPage(uid);
       });
   }
@@ -48,7 +52,8 @@ export class PageComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   fetchPage(pageUID) {
-    this.ctx.api.getByUID('landing_page', pageUID, {})
+   
+    this.ctx.api.getByUID('page', pageUID, {})
     .then(data => {
       this.toolbar = false;
       this.pageContent = data;
