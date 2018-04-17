@@ -1,3 +1,7 @@
+import { HiComponent } from './hi/hi.component';
+import { LandingPageResolver } from './landing-page/landing-page.resolver';
+import { LandingPageComponent } from './landing-page/landing-page.component';
+import { LandingPageModule } from './landing-page/landing-page.module';
 import { PreviewModule } from './preview/preview.module';
 import { HelpModule } from './help/help.module';
 import { FormsModule } from '@angular/forms';
@@ -20,9 +24,17 @@ import { PageComponent } from './page/page.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full'},
   { path: '', pathMatch: 'full', redirectTo: '/help' },
+  { path: 'hi', component: HiComponent, pathMatch: 'full',
+  resolve: { message: LandingPageResolver } },
   { path: 'help', component: HelpComponent},
   { path: 'preview', component: PreviewComponent },
   { path: 'page/:uid', component: PageComponent },
+  {
+    path: 'landingpage',
+    component: LandingPageComponent,
+    pathMatch: 'full',
+    resolve: { message: LandingPageResolver }
+  },
   { path: 'lazy', loadChildren: './lazy/lazy.module#LazyModule'},
   { path: 'lazy/nested', loadChildren: './lazy/lazy.module#LazyModule'},
 ];
@@ -31,6 +43,7 @@ export const routes: Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
+    HiComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'my-app'}),
@@ -39,11 +52,12 @@ export const routes: Routes = [
     HelpModule,
     PreviewModule,
     PageModule,
+    LandingPageModule,
     FormsModule,
     HttpModule,
     TransferHttpCacheModule,
   ],
-  providers: [PrismicService],
+  providers: [PrismicService, LandingPageResolver],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

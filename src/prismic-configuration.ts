@@ -12,6 +12,9 @@ export const CONFIG: PrismicConfiguration = {
     if (doc.type === 'page') {
       return `page/${doc.uid}`;
     }
+    if (doc.type === 'landingpage') {
+      return `landingpage`;
+    }
     return '/';
   }
 };

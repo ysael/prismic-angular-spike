@@ -1,9 +1,8 @@
-
 <div *ngIf="!pageContent">
     <h2>Loading your page content</h2>
 </div>
 
 <div class="page-content" *ngIf="pageContent" [attr.data-wio-id]="pageContent.id">
-    <img src="{{pageContent.data.image.url}}" />
-    <h1>{{pageContent.data.title[0].text}}</h1>
+    <img alt="cover" src={{pageContent.data.hero_image.url}} />
+    <h1>{{pageContent.data.hero_title[0].text}}</h1>
 </div>

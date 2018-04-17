@@ -1,7 +1,7 @@
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, OnDestroy, SimpleChanges, AfterViewChecked } from '@angular/core';
 import { Context } from '../prismic/context';
 import { PrismicService } from '../prismic/prismic.service';
-import { ActivatedRoute, Params } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/observable/of';
@@ -9,37 +9,30 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/fromPromise';
 
+
 import * as PrismicDOM from 'prismic-dom';
 import { debugOutputAstAsTypeScript, DEFAULT_INTERPOLATION_CONFIG } from '@angular/compiler';
 
 @Component({
-  selector: 'app-page',
-  templateUrl: './page.component.html',
-  styleUrls: ['./page.component.css']
+  selector: 'app-landing-page',
+  templateUrl: './landing-page.component.html'
 })
-export class PageComponent implements OnInit, OnDestroy, AfterViewChecked {
-  private routeStream: Subscription;
+
+export class LandingPageComponent implements OnInit, AfterViewChecked {
   PrismicDOM: Object = PrismicDOM;
 
   ctx ?: Context;
   pageContent ?: any;
   toolbar = false;
+  data: any;
 
   constructor(private prismic: PrismicService, private route: ActivatedRoute) {
+    this.pageContent = this.route.snapshot.data.message.pageContent;
+    this.ctx = this.route.snapshot.data.message.ctx;
   }
 
   ngOnInit() {
-    this.routeStream = this.route.params
-      .map(params => params['uid'])
-      .mergeMap(uid => Observable.fromPromise(this.prismic.buildContext()).map(ctx => [uid, ctx]))
-      .subscribe(([uid, ctx]) => {
-        this.ctx = ctx;
-        this.fetchPage(uid);
-      });
-  }
 
-  ngOnDestroy() {
-    this.routeStream.unsubscribe();
   }
 
   ngAfterViewChecked() {
@@ -49,12 +42,4 @@ export class PageComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
-  fetchPage(pageUID) {
-    this.ctx.api.getByUID('page', pageUID, {})
-    .then(data => {
-      this.toolbar = false;
-      this.pageContent = data;
-    })
-    .catch(e => console.log('error in e', e));
-  }
 }
